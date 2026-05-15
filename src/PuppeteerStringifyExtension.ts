@@ -57,16 +57,13 @@ export class PuppeteerStringifyExtension extends StringifyExtension {
 
   override async beforeAllSteps(out: LineWriter, flow: UserFlow) {
     out.appendLine(
-      "const puppeteer = require('puppeteer'); // v23.0.0 or later"
+      "import { Locator, launch } from 'puppeteer'; // v25.0.0 or later"
     );
     out.appendLine('');
-    out.appendLine('(async () => {').startBlock();
     if (this.#targetBrowser === 'firefox') {
-      out.appendLine(
-        `const browser = await puppeteer.launch({browser: 'firefox'});`
-      );
+      out.appendLine(`const browser = await launch({browser: 'firefox'});`);
     } else {
-      out.appendLine('const browser = await puppeteer.launch();');
+      out.appendLine('const browser = await launch();');
     }
     out.appendLine('const page = await browser.newPage();');
     out.appendLine(`const timeout = ${flow.timeout || defaultTimeout};`);
@@ -84,10 +81,6 @@ export class PuppeteerStringifyExtension extends StringifyExtension {
         out.appendLine(line);
       }
     }
-    out.endBlock().appendLine('})().catch(err => {').startBlock();
-    out.appendLine('console.error(err);');
-    out.appendLine('process.exit(1);');
-    out.endBlock().appendLine('});');
   }
 
   override async stringifyStep(out: LineWriter, step: Step, flow: UserFlow) {
@@ -163,7 +156,7 @@ export class PuppeteerStringifyExtension extends StringifyExtension {
     step: StepWithSelectors,
     action: () => void
   ) {
-    out.appendLine('await puppeteer.Locator.race([').startBlock();
+    out.appendLine('await Locator.race([').startBlock();
     out.appendLine(
       step.selectors
         .map((s) => {

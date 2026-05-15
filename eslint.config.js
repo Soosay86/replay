@@ -1,17 +1,13 @@
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
+
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsdocPlugin from 'eslint-plugin-tsdoc';
 import globals from 'globals';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
+  baseDirectory: import.meta.dirname,
 });
 
 // Get the extended configs and filter out deprecated rules
@@ -59,23 +55,6 @@ export default [
       'tsdoc/syntax': 'warn',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
-    },
-  },
-
-  // Configuration for CommonJS files (.cjs)
-  {
-    files: ['**/*.cjs'],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-      },
-      parserOptions: {
-        ecmaVersion: 'latest',
-        sourceType: 'script',
-      },
-    },
-    rules: {
-      'no-unused-vars': 'off',
     },
   },
 
